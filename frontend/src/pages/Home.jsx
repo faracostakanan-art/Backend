@@ -68,11 +68,11 @@ const Home = () => {
               </Button>
             </div>
           </div>
-          <div className="hidden lg:block">
+          <div className="block">
             <img
               src="https://images.unsplash.com/photo-1758519291442-6a34815b0ae3?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=600"
               alt="Sécurité bancaire"
-              className="rounded-2xl shadow-2xl"
+              className="rounded-2xl shadow-2xl w-full max-w-md mx-auto lg:max-w-none"
             />
           </div>
         </div>

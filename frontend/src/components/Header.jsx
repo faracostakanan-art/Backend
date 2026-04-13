@@ -38,7 +38,7 @@ const Header = () => {
           {/* Logo LBP */}
           <Link to="/" className="flex items-center group" data-testid="logo-link">
             <img 
-              src="/logo-lbp.svg" 
+              src="/logo-lbp.png" 
               alt="La Banque Postale" 
               className="h-12 w-auto"
             />
