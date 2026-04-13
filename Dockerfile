@@ -1,23 +1,24 @@
 FROM node:18 AS frontend-build
 
 WORKDIR /app/frontend
-COPY frontend/package.json frontend/yarn.lock ./
 
-# Remove emergent-specific dependency
-RUN sed -i '/@emergentbase/d' package.json
-RUN yarn install --network-timeout 100000 && yarn add ajv@8.12.0
+COPY frontend/package.json ./
+
+RUN sed -i '/@emergentbase/d' package.json && \
+    npm install --legacy-peer-deps && \
+    npm install ajv@8.17.1 --legacy-peer-deps
 
 COPY frontend/ .
 
-# Clean craco config for production
 RUN echo 'const path = require("path"); module.exports = { webpack: { alias: { "@": path.resolve(__dirname, "src") } } };' > craco.config.js
 
 ENV REACT_APP_BACKEND_URL=""
-RUN yarn build
+RUN npx craco build
 
 FROM python:3.11-slim
 
 WORKDIR /app
+
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
