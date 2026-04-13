@@ -1,13 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
-import { Menu, X, Search, HelpCircle } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Menu, X, HelpCircle } from 'lucide-react';
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
 
   const navLinks = [
     { name: 'Accueil', path: '/' },
@@ -18,15 +16,15 @@ const Header = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm" data-testid="header">
       {/* Top bar */}
-      <div className="bg-[#e60028] py-2 px-4">
+      <div className="bg-[#003DA5] py-2 px-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
-            <span className="text-white">Particuliers</span>
+            <span className="text-white font-medium">Particuliers</span>
           </div>
           <div className="flex items-center gap-6">
-            <Link to="/faq" className="text-white hover:text-red-100 transition-colors flex items-center gap-1">
+            <Link to="/faq" className="text-white hover:text-blue-200 transition-colors flex items-center gap-1">
               <HelpCircle size={16} />
               <span className="hidden sm:inline">Aide et contacts</span>
             </Link>
@@ -35,14 +33,14 @@ const Header = () => {
       </div>
 
       {/* Main header */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          {/* Logo SG */}
-          <Link to="/" className="flex items-center group">
+          {/* Logo LBP */}
+          <Link to="/" className="flex items-center group" data-testid="logo-link">
             <img 
-              src="/sg-logo.jpeg" 
-              alt="SG - C'est vous l'avenir" 
-              className="h-14 w-auto"
+              src="/logo-lbp.svg" 
+              alt="La Banque Postale" 
+              className="h-12 w-auto"
             />
           </Link>
 
@@ -52,13 +50,14 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-all duration-200 hover:text-[#e60028] relative group ${
-                  isActive(link.path) ? 'text-[#e60028]' : 'text-gray-700'
+                data-testid={`nav-${link.name.toLowerCase().replace(/\s/g, '-')}`}
+                className={`text-sm font-medium transition-all duration-200 hover:text-[#003DA5] relative group ${
+                  isActive(link.path) ? 'text-[#003DA5]' : 'text-gray-700'
                 }`}
               >
                 {link.name}
                 <span
-                  className={`absolute -bottom-1 left-0 h-0.5 bg-[#e60028] transition-all duration-200 ${
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-[#003DA5] transition-all duration-200 ${
                     isActive(link.path) ? 'w-full' : 'w-0 group-hover:w-full'
                   }`}
                 />
@@ -68,30 +67,20 @@ const Header = () => {
 
           {/* Right side buttons */}
           <div className="hidden lg:flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="text-gray-700 hover:text-[#e60028]">
-              <Search size={20} />
+            <Button
+              asChild
+              className="bg-[#003DA5] hover:bg-[#002d7a] text-white font-semibold px-6 transition-all duration-200 shadow-lg hover:shadow-xl rounded-full"
+              data-testid="espace-client-btn"
+            >
+              <Link to="/login">Espace client</Link>
             </Button>
-            {isAuthenticated ? (
-              <Button
-                onClick={logout}
-                className="bg-[#e60028] hover:bg-[#c00020] text-white font-semibold px-6 transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                Déconnexion
-              </Button>
-            ) : (
-              <Button
-                asChild
-                className="bg-[#e60028] hover:bg-[#c00020] text-white font-semibold px-6 transition-all duration-200 shadow-lg hover:shadow-xl"
-              >
-                <Link to="/login">Espace client</Link>
-              </Button>
-            )}
           </div>
 
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden p-2 rounded-md hover:bg-gray-100 transition-colors"
+            data-testid="mobile-menu-btn"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -100,7 +89,7 @@ const Header = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-gray-50 border-t border-gray-200 animate-in slide-in-from-top duration-200">
+        <div className="lg:hidden bg-gray-50 border-t border-gray-200">
           <nav className="px-4 py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
               <Link
@@ -109,7 +98,7 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-4 py-3 rounded-md transition-all duration-200 ${
                   isActive(link.path)
-                    ? 'bg-[#e60028] text-white font-semibold'
+                    ? 'bg-[#003DA5] text-white font-semibold'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
@@ -117,26 +106,14 @@ const Header = () => {
               </Link>
             ))}
             <div className="pt-3 border-t border-gray-200">
-              {isAuthenticated ? (
-                <Button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full bg-[#e60028] hover:bg-[#c00020] text-white font-semibold"
-                >
-                  Déconnexion
-                </Button>
-              ) : (
-                <Button
-                  asChild
-                  className="w-full bg-[#e60028] hover:bg-[#c00020] text-white font-semibold"
-                >
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                    Espace client
-                  </Link>
-                </Button>
-              )}
+              <Button
+                asChild
+                className="w-full bg-[#003DA5] hover:bg-[#002d7a] text-white font-semibold rounded-full"
+              >
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                  Espace client
+                </Link>
+              </Button>
             </div>
           </nav>
         </div>
