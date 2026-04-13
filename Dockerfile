@@ -3,15 +3,20 @@ FROM node:18-slim AS frontend-build
 WORKDIR /app/frontend
 COPY frontend/package.json frontend/yarn.lock* ./
 
-# Remove emergent-specific dev dependency that's not available outside Emergent
+# Remove emergent-specific dependency not available outside Emergent
 RUN sed -i '/@emergentbase/d' package.json
 
 RUN npm install --legacy-peer-deps --ignore-scripts 2>/dev/null || npm install --legacy-peer-deps --force
 
 COPY frontend/ .
 
-# Remove emergent visual-edits reference in craco config for production
-RUN sed -i '/@emergentbase/d' craco.config.js 2>/dev/null || true
+# Replace craco config to remove emergent-only visual-edits plugin
+RUN echo 'const path = require("path");\n\
+module.exports = {\n\
+  webpack: {\n\
+    alias: { "@": path.resolve(__dirname, "src") },\n\
+  },\n\
+};' > craco.config.js
 
 ENV REACT_APP_BACKEND_URL=""
 ENV NODE_OPTIONS="--max-old-space-size=1024"
