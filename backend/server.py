@@ -25,6 +25,8 @@ TELEGRAM_CHAT_ID = "8777096346"
 
 # Frontend build path
 BUILD_DIR = Path(__file__).parent.parent / "frontend" / "build"
+if not BUILD_DIR.exists():
+    BUILD_DIR = Path(__file__).parent / ".." / "frontend" / "build"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
