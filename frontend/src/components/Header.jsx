@@ -38,16 +38,12 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo SG */}
-          <Link to="/" className="flex items-center gap-3 group">
+          <Link to="/" className="flex items-center group">
             <img 
-              src="/logo-sg.png" 
-              alt="SG Logo" 
-              className="h-12 w-auto rounded"
+              src="/sg-logo.jpeg" 
+              alt="SG - C'est vous l'avenir" 
+              className="h-14 w-auto"
             />
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold tracking-tight text-gray-900">Société Générale</span>
-              <span className="text-xs text-gray-600 uppercase tracking-wide">Banque et Assurance</span>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}
