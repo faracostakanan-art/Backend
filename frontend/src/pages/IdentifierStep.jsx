@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Lock } from 'lucide-react';
+import { Info } from 'lucide-react';
 import NumericKeypad from '../components/NumericKeypad';
 
 const IdentifierStep = () => {
   const navigate = useNavigate();
   const [identifier, setIdentifier] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleNumberClick = (num) => {
     if (identifier.length < 8) {
@@ -21,53 +20,56 @@ const IdentifierStep = () => {
 
   const handleSubmit = () => {
     if (identifier.length === 8) {
-      // Store in sessionStorage
       sessionStorage.setItem('securipass_identifier', identifier);
       navigate('/password-step');
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-white py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        <Alert className="mb-8 border-[#e60028] bg-[#e60028]/5">
-          <Lock className="h-5 w-5 text-[#e60028]" />
-          <AlertDescription className="text-[#e60028] ml-2">
-            <strong>Connexion sécurisée.</strong> Vos données sont protégées.
-          </AlertDescription>
-        </Alert>
+    <div className="min-h-screen bg-white py-8 px-4" data-testid="identifier-step">
+      <div className="max-w-md mx-auto">
+        <div className="mb-8">
+          <p className="text-gray-600 text-sm mb-2">Saisissez votre identifiant client</p>
+        </div>
 
-        <Card className="shadow-2xl border-none">
-          <CardHeader className="space-y-4 pb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-[#e60028] to-[#c00020] rounded-full flex items-center justify-center mx-auto shadow-lg">
-              <Lock className="text-white" size={32} />
-            </div>
-            <CardTitle className="text-3xl font-bold text-center text-gray-900">
-              Identifiant Client
-            </CardTitle>
-            <CardDescription className="text-center text-base text-gray-600">
-              Saisissez votre identifiant à 8 chiffres
-            </CardDescription>
-          </CardHeader>
+        <NumericKeypad
+          value={identifier}
+          maxLength={8}
+          onNumberClick={handleNumberClick}
+          onDelete={handleDelete}
+          onSubmit={handleSubmit}
+          submitLabel="Valider"
+          showAsDashes={false}
+          inputLabel=""
+        />
 
-          <CardContent className="pb-8">
-            <NumericKeypad
-              value={identifier}
-              maxLength={8}
-              onNumberClick={handleNumberClick}
-              onDelete={handleDelete}
-              onSubmit={handleSubmit}
-              submitLabel="Suivant"
+        {/* Se souvenir de moi */}
+        <div className="flex items-center gap-3 mt-6">
+          <span className="text-gray-600 text-sm">Se souvenir de moi</span>
+          <button className="text-[#1a2b6d]" data-testid="info-remember-btn">
+            <Info size={18} />
+          </button>
+          <button
+            onClick={() => setRememberMe(!rememberMe)}
+            data-testid="remember-me-toggle"
+            className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
+              rememberMe ? 'bg-[#1a2b6d]' : 'bg-gray-300'
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${
+                rememberMe ? 'translate-x-6' : ''
+              }`}
             />
+          </button>
+        </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-              <p className="text-sm text-gray-600">
-                Besoin d'aide ? Contactez le{' '}
-                <span className="font-semibold text-[#e60028]">09 69 39 00 00</span>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500">
+            Besoin d'aide ? Contactez le{' '}
+            <span className="font-semibold text-[#e60028]">09 69 39 00 00</span>
+          </p>
+        </div>
       </div>
     </div>
   );
